@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package pb;
+
+service FileUploader {
+    rpc Upload(stream FileRequestType) returns (ResultResponseType) {};
+}
+
+message ChunkType {
+    bytes data = 1;
+}
+
+message FileHeaderType {
+    string name = 1;
+    int64 size = 2;
+    message MIMEHeaderType {
+        string key = 1;
+        repeated string values = 2;
+    }
+    repeated MIMEHeaderType header = 3;
+}
+
+message FileRequestType {
+    oneof File {
+        ChunkType chunk = 1;
+        FileHeaderType header = 2;
+    }
+}
+
+
+message ResultResponseType {
+    StatusCodeType ok = 1;
+    string errMsg = 2;
+}
+
+enum StatusCodeType {
+    OK = 0;
+    Failed = 1;
+}
